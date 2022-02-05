@@ -6,6 +6,8 @@ author: Samson Zhang | sz7651@rit.edu
 """
 import os
 import discord
+from imdb_search import get_rand_movie
+from imdb_search import check_movie
 from discord.ext import commands
 from dotenv import load_dotenv
 
@@ -13,8 +15,8 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 bot = commands.Bot(command_prefix='!')
-secret_name = 'Never Gonna Give You Up'
-hints = ['released: 1987', 'artist: Rick Astley', 'album: Whenever You Need Somebody']
+secret_name = get_rand_movie()
+hints = []
 
 
 @bot.event
@@ -68,37 +70,30 @@ async def guess(ctx, *args):
     :param ctx: context
     :param args: user input
     """
-    # initialize the name and hints
-    # song_name = something string
-    # hint = something list
-
-    # await ctx.send('(debug msg) answer: ' + song_name + '\n' +
-    #               '(debug msg) user input: ' + ' '.join(args))
+    global secret_name
+    await ctx.send('(debug msg) answer: ' + secret_name['title'] + '\n' +
+                   '(debug msg) user input: ' + ' '.join(args))
 
     if len(args) == 0:
         await ctx.send("bruh you didn't even guess. Enter a song name after the command")
         return
+
     if ' '.join(args) == 'give up':
-        await ctx.send("Here's the correct answer: " + secret_name +
+        await ctx.send("Here's the correct answer: " + secret_name['title'] +
                        '\nYou dum')
+        secret_name = get_rand_movie()
+
     elif ' '.join(args) == 'hint':
         if len(hints) != 0:
             await ctx.send("Here's a hint:\n" + hints.pop(0))
         else:
             await ctx.send("No more hints for you\n" +
                            "If I give you any more I might as well tell you the answer")
-    elif ' '.join(args) == secret_name:
+
+    elif check_movie(' '.join(args), secret_name):
         await ctx.send('Correct! WOW, you exist!')
+        secret_name = get_rand_movie()
     else:
         await ctx.send('Incorrect, try asking again')
-
-@bot.command()
-async def play(ctx):
-    author = ctx.message.author
-    voice_channel = author.voice_channel
-    vc = await client.join_voice_channel(voice_channel)
-    
-    player = await vc.create_ytdl_player(url)
-    player.start()
 
 bot.run(TOKEN)
