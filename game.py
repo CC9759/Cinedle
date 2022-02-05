@@ -10,13 +10,14 @@ from imdb_search import get_rand_movie
 from imdb_search import check_movie
 from discord.ext import commands
 from dotenv import load_dotenv
+import random
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 bot = commands.Bot(command_prefix='!')
 secret_name = get_rand_movie()
-hints = []
+word_reveal = []
 
 
 @bot.event
@@ -37,6 +38,7 @@ async def on_ready():
         'Leggo, bot started\n'
         '.-.-.-..-.-.-.-.-.'
     )
+    init_word_reveal()
 
 
 @bot.event
@@ -72,6 +74,7 @@ async def guess(ctx, *args):
     :param args: user input
     """
     global secret_name
+
     await ctx.send('(debug msg) answer: ' + secret_name['title'] + '\n' +
                    '(debug msg) user input: ' + ' '.join(args))
 
@@ -83,10 +86,12 @@ async def guess(ctx, *args):
         await ctx.send("Here's the correct answer: " + secret_name['title'] +
                        '\nYou dum')
         secret_name = get_rand_movie()
+        init_word_reveal()
 
     elif ' '.join(args) == 'hint':
-        if len(hints) != 0:
-            await ctx.send("Here's a hint:\n" + hints.pop(0))
+        if not check_reveals():
+            reveal_word()
+            await ctx.send("Here's a hint:" + display_word())
         else:
             await ctx.send("No more hints for you\n" +
                            "If I give you any more I might as well tell you the answer")
@@ -94,7 +99,52 @@ async def guess(ctx, *args):
     elif check_movie(' '.join(args), secret_name):
         await ctx.send('Correct! WOW, you exist!')
         secret_name = get_rand_movie()
+        init_word_reveal()
     else:
         await ctx.send('Incorrect, try asking again')
+
+
+def check_reveals():
+    length = len(word_reveal)
+    count = 0
+
+    for i in word_reveal:
+        if i:
+            count += 1
+        if count >= length/2:
+            return True
+
+    return False
+
+
+def init_word_reveal():
+    global word_reveal
+
+    for i in secret_name:
+        if i == " ":
+            word_reveal.append(True)
+        word_reveal.append(False)
+
+def display_word():
+    word = ""
+    count = 0
+
+    for i in secret_name:
+        if i == " ":
+            word += i
+        else:
+            word += "_"
+        count += 0
+    return word 
+
+def reveal_word():
+    random_reveal = random.randrange(len(secret_name))
+
+    while word_reveal[random_reveal]:
+        random_reveal = random.randrange(len(secret_name))
+    
+    word_reveal[random_reveal] = True
+
+    return word_reveal
 
 bot.run(TOKEN)
