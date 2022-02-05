@@ -71,5 +71,13 @@ async def guess(ctx, *args):
     else:
         await ctx.send('try asking again')
 
+@bot.command()
+async def play(ctx):
+    author = ctx.message.author
+    voice_channel = author.voice_channel
+    vc = await client.join_voice_channel(voice_channel)
+    
+    player = await vc.create_ytdl_player(url)
+    player.start()
 
 bot.run(TOKEN)
