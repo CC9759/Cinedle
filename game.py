@@ -66,7 +66,8 @@ async def hi(ctx):
 @bot.command(help='use "!guess <song name>" or "!guess hint" or "!guess give up"')
 async def guess(ctx, *args):
     """
-    command, takes the user input and checks whether it matches the song name
+    command, takes the user input and checks whether it matches the secret name
+    the secret name will be reset once the user gives up or gets the correct answer
     :param ctx: context
     :param args: user input
     """
