@@ -17,6 +17,4 @@ def get_rand_movie():
 
 def check_movie(user_input, answer):
     movies = imdb_data.search_movie(user_input)
-    print(movies)
-    print(movies[0]['title'])
     return movies is not None and movies[0]['title'] == answer['title']

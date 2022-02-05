@@ -65,7 +65,13 @@ async def hi(ctx):
     await ctx.send("shuddup " + user.display_name)
 
 
-@bot.command(help='use "!guess <song name>" or "!guess hint" or "!guess give up"')
+@bot.command()
+async def start(ctx):
+    init_hint = 'Initial hints: '
+    await ctx.send(init_hint)
+
+
+@bot.command(help='use "!guess <movie name>" or "!guess hint" or "!guess give up"')
 async def guess(ctx, *args):
     """
     command, takes the user input and checks whether it matches the secret name
@@ -79,12 +85,13 @@ async def guess(ctx, *args):
                    '(debug msg) user input: ' + ' '.join(args))
 
     if len(args) == 0:
-        await ctx.send("bruh you didn't even guess. Enter a song name after the command")
+        await ctx.send("bruh you didn't even guess. Enter a movie name after the command")
         return
 
     if ' '.join(args) == 'give up':
         await ctx.send("Here's the correct answer: " + secret_name['title'] +
                        '\nYou dum')
+        await ctx.send('use !start to start the next game')
         secret_name = get_rand_movie()
         init_word_reveal()
 
@@ -98,6 +105,7 @@ async def guess(ctx, *args):
 
     elif check_movie(' '.join(args), secret_name):
         await ctx.send('Correct! WOW, you exist!')
+        await ctx.send('use !start to start the next game')
         secret_name = get_rand_movie()
         init_word_reveal()
     else:
