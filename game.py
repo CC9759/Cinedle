@@ -1,3 +1,9 @@
+"""
+file name: game.py
+description: music wordle discord bot
+language: python3
+author: Samson Zhang | sz7651@rit.edu
+"""
 import os
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -10,6 +16,9 @@ song_name = 'Never Gonna Give You Up'
 
 @bot.event
 async def on_ready():
+    """
+    prints a message on bot startup
+    """
     for guild in bot.guilds:
         if guild.name == GUILD:
             break
@@ -23,6 +32,10 @@ async def on_ready():
 
 @bot.event
 async def on_message(message):
+    """
+    sends a message on discord when someone sends a specific message
+    :param message: message sent by user
+    """
     if message.author == bot.user:
         return
 
@@ -33,12 +46,21 @@ async def on_message(message):
 
 @bot.command()
 async def hi(ctx):
+    """
+    command, prints a message when ran
+    :param ctx: context
+    """
     user = ctx.message.author
     await ctx.send("shuddup " + user.display_name)
 
 
 @bot.command()
 async def guess(ctx, *args):
+    """
+    command, takes the user input and checks whether it matches the song name
+    :param ctx: context
+    :param args: user input
+    """
     await ctx.send('(debug msg) answer: ' + song_name + '\n' +
                    '(debug msg) user input: ' + ' '.join(args))
 
