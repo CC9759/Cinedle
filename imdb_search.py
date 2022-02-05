@@ -1,13 +1,12 @@
 import imdb
 import random
 
+imdb_data = imdb.IMDb()
+
+def  get_top250():
+    return imdb_data.get_top250_movies()
+
 def get_rand_movie():
-    imdb_data = imdb.IMDb()
+    return get_top250[random.randrange(250)]
 
-    top250 = imdb_data.get_top250_movies()
-    return top250[random.randrange(250)]
-
-def test():
-    print(get_rand_movie())
-
-test()
+print(get_rand_movie())
