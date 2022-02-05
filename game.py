@@ -1,6 +1,6 @@
 """
 file name: game.py
-description: music wordle discord bot
+description: movie wordle discord bot
 language: python3
 author: Samson Zhang | sz7651@rit.edu
 """
@@ -13,7 +13,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 bot = commands.Bot(command_prefix='!')
-song_name = 'Never Gonna Give You Up'
+secret_name = 'Never Gonna Give You Up'
 hints = ['released: 1987', 'artist: Rick Astley', 'album: Whenever You Need Somebody']
 
 
@@ -32,7 +32,8 @@ async def on_ready():
     print(
         f'{bot.user} has descended upon:\n'
         f'{guild.name}(id: {guild.id})\n'
-        'Leggo'
+        'Leggo, bot started\n'
+        '.-.-.-..-.-.-.-.-.'
     )
 
 
@@ -78,7 +79,7 @@ async def guess(ctx, *args):
         await ctx.send("bruh you didn't even guess. Enter a song name after the command")
         return
     if ' '.join(args) == 'give up':
-        await ctx.send("Here's the correct answer: " + song_name +
+        await ctx.send("Here's the correct answer: " + secret_name +
                        '\nYou dum')
     elif ' '.join(args) == 'hint':
         if len(hints) != 0:
@@ -86,7 +87,7 @@ async def guess(ctx, *args):
         else:
             await ctx.send("No more hints for you\n" +
                            "If I give you any more I might as well tell you the answer")
-    elif ' '.join(args) == song_name:
+    elif ' '.join(args) == secret_name:
         await ctx.send('Correct! WOW, you exist!')
     else:
         await ctx.send('Incorrect, try asking again')
