@@ -67,8 +67,7 @@ async def hi(ctx):
 
 @bot.command()
 async def start(ctx):
-    init_hint = 'Initial hints: '
-    await ctx.send(init_hint)
+    await ctx.send('Initial hint:\nReleased: ' + str(secret_name['year']))
 
 
 @bot.command(help='use "!guess <movie name>" or "!guess hint" or "!guess give up"')
