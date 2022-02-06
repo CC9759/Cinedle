@@ -1,2 +1,2 @@
-# Cinnedle
+# Cinedle
 Cinema Wordle Discord Bot
