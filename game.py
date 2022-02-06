@@ -141,6 +141,8 @@ def init_word_reveal():
     """
     global word_blanks
 
+    word_blanks = []
+
     for i in secret_name['title']:
         if i.isalpha():
             word_blanks.append("_")
