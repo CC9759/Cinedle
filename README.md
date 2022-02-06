@@ -1,2 +1,2 @@
-# Audle
-Music Wordle Discord Bot
+# Cinnedle
+Cinema Wordle Discord Bot
