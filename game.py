@@ -68,11 +68,11 @@ async def hi(ctx):
 @bot.command()
 async def start(ctx):
     init_word_reveal()
-    init_hint = 'Initial hints: '
+    init_hint = 'Initial hints: ' + str(secret_name['year'])
     await ctx.send(init_hint)
 
 
-@bot.command(help='use "!guess <movie name>" or "!guess hint" or "!guess give up"')
+@bot.command(help='use "!guess <movie name>"')
 async def guess(ctx, *args):
     """
     command, takes the user input and checks whether it matches the secret name
@@ -95,14 +95,6 @@ async def guess(ctx, *args):
         secret_name = get_rand_movie()
         init_word_reveal()
 
-    elif ' '.join(args) == 'hint':
-        if not check_reveals():
-            reveal_word()
-            await ctx.send("Here's a hint:" + display_word())
-        else:
-            await ctx.send("No more hints for you\n" +
-                           "If I give you any more I might as well tell you the answer")
-
     elif check_movie(' '.join(args), secret_name):
         await ctx.send('Correct! You Win!')
         await ctx.send('use !start to start the next game')
@@ -111,6 +103,13 @@ async def guess(ctx, *args):
     else:
         await ctx.send('Incorrect, try asking again')
 
+@bot.command(help='use "!hint to reveal a letter"')
+async def hint(ctx):
+    if not check_reveals():
+        reveal_word()
+        await ctx.send("Here's a hint:" + display_word())
+    else:
+        await ctx.send("Max hint limit reached!")
 
 def check_reveals():
     """
@@ -158,7 +157,7 @@ def reveal_word():
     """
     reveals a random character in the secret movie name
     """
-    random_reveal = random.randrange(len(secret_name['title']))
+    random_reveal = random.randrange(len(secret_name['title']) - 1)
 
     while not word_blanks[random_reveal].isalpha():
         random_reveal = random.randrange(len(secret_name['title']))
