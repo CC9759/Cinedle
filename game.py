@@ -89,13 +89,6 @@ async def guess(ctx, *args):
     if len(args) == 0:
         await ctx.send("You did not enter a guess. Enter a movie name after the command.")
         return
-
-    if ' '.join(args) == 'give up':
-        await ctx.send("Here's the correct answer: " + secret_name['title'])
-        await ctx.send('use !start to start the next game')
-        secret_name = get_rand_movie()
-        init_word_reveal()
-
     elif check_movie(' '.join(args), secret_name):
         await ctx.send('Correct! You Win!')
         await ctx.send('use !start to start the next game')
@@ -104,6 +97,15 @@ async def guess(ctx, *args):
     else:
         await ctx.send("You guessed: " + get_user_movie(' '.join(args)))
         await ctx.send('Incorrect, try asking again')
+
+@bot.command(help = 'use !giveup to give up')
+async def giveup(ctx):
+    global secret_name
+    await ctx.send("Here's the correct answer: " + secret_name['title'])
+    await ctx.send('use !start to start the next game')
+    secret_name = get_rand_movie()
+    init_word_reveal()
+
 
 @bot.command(help='use "!hint to reveal a letter"')
 async def hint(ctx):
