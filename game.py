@@ -4,7 +4,7 @@ description: movie wordle discord bot
 language: python3
 author: Samson Zhang | sz7651@rit.edu, Celina Chen
 """
-from curses.ascii import isalpha
+
 import os
 import discord
 from imdb_search import get_rand_movie
@@ -39,7 +39,6 @@ async def on_ready():
         'Leggo, bot started\n'
         '.-.-.-..-.-.-.-.-.'
     )
-    init_word_reveal()
 
 
 @bot.event
@@ -68,6 +67,7 @@ async def hi(ctx):
 
 @bot.command()
 async def start(ctx):
+    init_word_reveal()
     init_hint = 'Initial hints: '
     await ctx.send(init_hint)
 
@@ -123,7 +123,7 @@ def check_reveals():
     count = 0
 
     for i in word_blanks:
-        if isalpha(i) or i == " ":
+        if i != "_":
             count += 1
         if count >= length/2:
             return True
@@ -137,8 +137,8 @@ def init_word_reveal():
     """
     global word_blanks
 
-    for i in secret_name:
-        if isalpha(i):
+    for i in secret_name['title']:
+        if i.isalpha():
             word_blanks.append("_")
         else:
             word_blanks.append(i)
@@ -159,12 +159,12 @@ def reveal_word():
     """
     reveals a random character in the secret movie name
     """
-    random_reveal = random.randrange(len(secret_name))
+    random_reveal = random.randrange(len(secret_name['title']))
 
-    while not isalpha(word_blanks[random_reveal]):
-        random_reveal = random.randrange(len(secret_name))
+    while not word_blanks[random_reveal].isalpha():
+        random_reveal = random.randrange(len(secret_name['title']))
     
-    word_blanks[random_reveal] = secret_name[random_reveal]
+    word_blanks[random_reveal] = secret_name['title'][random_reveal]
 
 if __name__ == "__main__":
     bot.run(TOKEN)
