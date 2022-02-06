@@ -2,8 +2,9 @@
 file name: game.py
 description: movie wordle discord bot
 language: python3
-author: Samson Zhang | sz7651@rit.edu
+author: Samson Zhang | sz7651@rit.edu, Celina Chen
 """
+from curses.ascii import isalpha
 import os
 import discord
 from imdb_search import get_rand_movie
@@ -17,7 +18,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 bot = commands.Bot(command_prefix='!')
 secret_name = get_rand_movie()
-word_reveal = []
+word_blanks = []
 
 
 @bot.event
@@ -67,7 +68,8 @@ async def hi(ctx):
 
 @bot.command()
 async def start(ctx):
-    await ctx.send('Initial hint:\nReleased: ' + str(secret_name['year']))
+    init_hint = 'Initial hints: '
+    await ctx.send(init_hint)
 
 
 @bot.command(help='use "!guess <movie name>" or "!guess hint" or "!guess give up"')
@@ -112,11 +114,16 @@ async def guess(ctx, *args):
 
 
 def check_reveals():
-    length = len(word_reveal)
+    """
+    checks if the number of characters revealed has reached the limit of half the word
+
+    :return: true if the number of revealed chars is more than or equal to half of the movie name
+    """
+    length = len(word_blanks)
     count = 0
 
-    for i in word_reveal:
-        if i:
+    for i in word_blanks:
+        if isalpha(i) or i == " ":
             count += 1
         if count >= length/2:
             return True
@@ -125,33 +132,39 @@ def check_reveals():
 
 
 def init_word_reveal():
-    global word_reveal
+    """
+    initializes the word blanks based on the secret movie
+    """
+    global word_blanks
 
     for i in secret_name:
-        if i == " ":
-            word_reveal.append(True)
-        word_reveal.append(False)
+        if isalpha(i):
+            word_blanks.append("_")
+        else:
+            word_blanks.append(i)
 
 def display_word():
-    word = ""
-    count = 0
+    """
+    takes the list of chars from word blanks and creates a complete string
 
-    for i in secret_name:
-        if i == " ":
-            word += i
-        else:
-            word += "_"
-        count += 0
+    :return: the complete string of the word blank list
+    """
+    word = ""
+    for i in word_blanks:
+        word += i
+
     return word 
 
 def reveal_word():
+    """
+    reveals a random character in the secret movie name
+    """
     random_reveal = random.randrange(len(secret_name))
 
-    while word_reveal[random_reveal]:
+    while not isalpha(word_blanks[random_reveal]):
         random_reveal = random.randrange(len(secret_name))
     
-    word_reveal[random_reveal] = True
+    word_blanks[random_reveal] = secret_name[random_reveal]
 
-    return word_reveal
-
-bot.run(TOKEN)
+if __name__ == "__main__":
+    bot.run(TOKEN)
