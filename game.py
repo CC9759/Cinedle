@@ -2,7 +2,7 @@
 file name: game.py
 description: movie wordle discord bot
 language: python3
-author: Samson Zhang | sz7651@rit.edu, Celina Chen
+author: Samson Zhang | sz7651@rit.edu, Celina Chen | Jacob Swihart | Rahul Raiyani
 """
 
 import os
@@ -39,31 +39,6 @@ async def on_ready():
         'Leggo, bot started\n'
         '.-.-.-..-.-.-.-.-.'
     )
-
-
-@bot.event
-async def on_message(message):
-    """
-    sends a message on discord when someone sends a specific message
-    :param message: message sent by user
-    """
-    if message.author == bot.user:
-        return
-
-    if message.content == 'commies' or message.content == 'commie':
-        await message.channel.send('https://www.youtube.com/watch?v=4quwGch9jLg')
-    await bot.process_commands(message)
-
-
-@bot.command()
-async def hi(ctx):
-    """
-    command, prints a message when ran
-    :param ctx: context
-    """
-    user = ctx.message.author
-    await ctx.send("shuddup " + user.display_name)
-
 
 @bot.command()
 async def start(ctx):
