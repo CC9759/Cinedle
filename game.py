@@ -2,13 +2,12 @@
 file name: game.py
 description: movie wordle discord bot
 language: python3
-author: Samson Zhang | sz7651@rit.edu, Celina Chen | Jacob Swihart | Rahul Raiyani
+author: Samson Zhang | sz7651@rit.edu, Celina Chen
 """
 
 import os
 import discord
 from imdb_search import *
-from imdb_search import get_user_movie
 from discord.ext import commands
 from dotenv import load_dotenv
 import random
@@ -58,29 +57,19 @@ async def guess(ctx, *args):
     """
     global secret_name
 
-    await ctx.send('(debug msg) answer: ' + secret_name['title'] + '\n' +
-                   '(debug msg) user input: ' + ' '.join(args))
-
     if len(args) == 0:
         await ctx.send("You did not enter a guess. Enter a movie name after the command.")
         return
+        
     elif check_movie(' '.join(args), secret_name):
         await ctx.send('Correct! You Win!')
         await ctx.send('use !start to start the next game')
         secret_name = get_rand_movie()
         init_word_reveal()
+        
     else:
         await ctx.send("You guessed: " + get_user_movie(' '.join(args)))
         await ctx.send('Incorrect, try asking again')
-
-@bot.command(help = 'use !giveup to give up')
-async def giveup(ctx):
-    global secret_name
-    await ctx.send("Here's the correct answer: " + secret_name['title'])
-    await ctx.send('use !start to start the next game')
-    secret_name = get_rand_movie()
-    init_word_reveal()
-
 
 @bot.command(help='use "!hint to reveal a letter"')
 async def hint(ctx):
