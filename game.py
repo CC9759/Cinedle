@@ -117,6 +117,8 @@ def check_reveals():
 
     :return: true if the number of revealed chars is more than or equal to half of the movie name
     """
+    global word_blanks
+
     length = len(word_blanks)
     count = 0
 
@@ -157,6 +159,8 @@ def reveal_word():
     """
     reveals a random character in the secret movie name
     """
+    global word_blanks
+
     random_reveal = random.randrange(len(secret_name['title']) - 1)
 
     while not word_blanks[random_reveal].isalpha():
