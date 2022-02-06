@@ -7,8 +7,8 @@ author: Samson Zhang | sz7651@rit.edu, Celina Chen
 
 import os
 import discord
-from imdb_search import get_rand_movie
-from imdb_search import check_movie
+from imdb_search import *
+from imdb_search import get_user_movie
 from discord.ext import commands
 from dotenv import load_dotenv
 import random
@@ -70,6 +70,7 @@ async def start(ctx):
     init_word_reveal()
     init_hint = 'Initial hints: ' + str(secret_name['year'])
     await ctx.send(init_hint)
+    await ctx.send(display_word())
 
 
 @bot.command(help='use "!guess <movie name>"')
@@ -101,6 +102,7 @@ async def guess(ctx, *args):
         secret_name = get_rand_movie()
         init_word_reveal()
     else:
+        await ctx.send("You guessed: " + get_user_movie(' '.join(args)))
         await ctx.send('Incorrect, try asking again')
 
 @bot.command(help='use "!hint to reveal a letter"')
@@ -123,7 +125,7 @@ def check_reveals():
     count = 0
 
     for i in word_blanks:
-        if i != "_":
+        if i != "_" or i.isalpha():
             count += 1
         if count >= length/2:
             return True
@@ -149,10 +151,12 @@ def display_word():
 
     :return: the complete string of the word blank list
     """
-    word = ""
+    word = "```"
+
     for i in word_blanks:
         word += i
 
+    word += "```"
     return word 
 
 def reveal_word():
@@ -163,8 +167,8 @@ def reveal_word():
 
     random_reveal = random.randrange(len(secret_name['title']) - 1)
 
-    while not word_blanks[random_reveal].isalpha():
-        random_reveal = random.randrange(len(secret_name['title']))
+    while word_blanks[random_reveal].isalpha():
+        random_reveal = random.randrange(len(secret_name['title']) - 1)
     
     word_blanks[random_reveal] = secret_name['title'][random_reveal]
 
